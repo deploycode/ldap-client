@@ -6,10 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
+use LdapRecord\Laravel\Auth\LdapAuthenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements LdapAuthenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, AuthenticatesWithLdap;
 
     /**
      * The attributes that are mass assignable.
@@ -43,5 +45,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getLdapDomainColumn(): string
+    {
+        return 'domain';
+    }
+
+    public function getLdapGuidColumn(): string
+    {
+        return 'guid';
+    }
+
+    public function getAuthPasswordName(): string
+    {
+        return 'password';
     }
 }
